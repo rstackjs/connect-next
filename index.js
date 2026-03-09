@@ -13,11 +13,11 @@
  * @private
  */
 
-var debug = require('debug')('connect:dispatcher');
-var EventEmitter = require('events').EventEmitter;
-var finalhandler = require('finalhandler');
-var http = require('http');
-var parseUrl = require('parseurl');
+const debug = require('debug')('connect:dispatcher');
+const { EventEmitter } = require('node:events');
+const finalhandler = require('finalhandler');
+const http = require('node:http');
+const parseUrl = require('parseurl');
 
 /**
  * Module exports.
@@ -31,13 +31,9 @@ module.exports = createServer;
  * @private
  */
 
-var env = process.env.NODE_ENV || 'development';
-var proto = {};
-
-/* istanbul ignore next */
-var defer = typeof setImmediate === 'function'
-  ? setImmediate
-  : function(fn){ process.nextTick(fn.bind.apply(fn, arguments)) }
+const env = process.env.NODE_ENV || 'development';
+const proto = {};
+const defer = setImmediate;
 
 /**
  * Create a new connect server.
@@ -47,7 +43,7 @@ var defer = typeof setImmediate === 'function'
  */
 
 function createServer() {
-  function app(req, res, next){ app.handle(req, res, next); }
+  function app(req, res, next) { app.handle(req, res, next); }
   Object.assign(app, proto);
   Object.assign(app, EventEmitter.prototype);
   app.route = '/';
@@ -73,8 +69,8 @@ function createServer() {
  */
 
 proto.use = function use(route, fn) {
-  var handle = fn;
-  var path = route;
+  let handle = fn;
+  let path = route;
 
   // default route to '/'
   if (typeof route !== 'string') {
@@ -84,7 +80,7 @@ proto.use = function use(route, fn) {
 
   // wrap sub-apps
   if (typeof handle.handle === 'function') {
-    var server = handle;
+    const server = handle;
     server.route = path;
     handle = function (req, res, next) {
       server.handle(req, res, next);
@@ -97,7 +93,7 @@ proto.use = function use(route, fn) {
   }
 
   // strip trailing slash
-  if (path[path.length - 1] === '/') {
+  if (path.endsWith('/')) {
     path = path.slice(0, -1);
   }
 
@@ -116,14 +112,14 @@ proto.use = function use(route, fn) {
  */
 
 proto.handle = function handle(req, res, out) {
-  var index = 0;
-  var protohost = getProtohost(req.url) || '';
-  var removed = '';
-  var slashAdded = false;
-  var stack = this.stack;
+  let index = 0;
+  const protohost = getProtohost(req.url) || '';
+  let removed = '';
+  let slashAdded = false;
+  const stack = this.stack;
 
   // final function handler
-  var done = out || finalhandler(req, res, {
+  const done = out || finalhandler(req, res, {
     env: env,
     onerror: logerror
   });
@@ -133,17 +129,17 @@ proto.handle = function handle(req, res, out) {
 
   function next(err) {
     if (slashAdded) {
-      req.url = req.url.substr(1);
+      req.url = req.url.slice(1);
       slashAdded = false;
     }
 
     if (removed.length !== 0) {
-      req.url = protohost + removed + req.url.substr(protohost.length);
+      req.url = protohost + removed + req.url.slice(protohost.length);
       removed = '';
     }
 
     // next callback
-    var layer = stack[index++];
+    const layer = stack[index++];
 
     // all done
     if (!layer) {
@@ -152,16 +148,18 @@ proto.handle = function handle(req, res, out) {
     }
 
     // route data
-    var path = parseUrl(req).pathname || '/';
-    var route = layer.route;
+    const path = parseUrl(req).pathname || '/';
+    const route = layer.route;
+    const lowerPath = path.toLowerCase();
+    const lowerRoute = route.toLowerCase();
 
     // skip this layer if the route doesn't match
-    if (path.toLowerCase().substr(0, route.length) !== route.toLowerCase()) {
+    if (!lowerPath.startsWith(lowerRoute)) {
       return next(err);
     }
 
     // skip if route match does not border "/", ".", or end
-    var c = path.length > route.length && path[route.length];
+    const c = path.length > route.length && path[route.length];
     if (c && c !== '/' && c !== '.') {
       return next(err);
     }
@@ -169,7 +167,7 @@ proto.handle = function handle(req, res, out) {
     // trim off the part of the url that matches the route
     if (route.length !== 0 && route !== '/') {
       removed = route;
-      req.url = protohost + req.url.substr(protohost.length + removed.length);
+      req.url = protohost + req.url.slice(protohost.length + removed.length);
 
       // ensure leading slash
       if (!protohost && req.url[0] !== '/') {
@@ -211,9 +209,9 @@ proto.handle = function handle(req, res, out) {
  * @api public
  */
 
-proto.listen = function listen() {
-  var server = http.createServer(this);
-  return server.listen.apply(server, arguments);
+proto.listen = function listen(...args) {
+  const server = http.createServer(this);
+  return server.listen(...args);
 };
 
 /**
@@ -222,9 +220,9 @@ proto.listen = function listen() {
  */
 
 function call(handle, route, err, req, res, next) {
-  var arity = handle.length;
-  var error = err;
-  var hasError = Boolean(err);
+  const arity = handle.length;
+  let error = err;
+  const hasError = Boolean(err);
 
   debug('%s %s : %s', handle.name || '<anonymous>', route, req.originalUrl);
 
@@ -255,7 +253,9 @@ function call(handle, route, err, req, res, next) {
  */
 
 function logerror(err) {
-  if (env !== 'test') console.error(err.stack || err.toString());
+  if (env !== 'test') {
+    console.error(err.stack || err.toString());
+  }
 }
 
 /**
@@ -270,9 +270,9 @@ function getProtohost(url) {
     return undefined;
   }
 
-  var fqdnIndex = url.indexOf('://')
+  const fqdnIndex = url.indexOf('://');
 
   return fqdnIndex !== -1 && url.lastIndexOf('?', fqdnIndex) === -1
-    ? url.substr(0, url.indexOf('/', 3 + fqdnIndex))
+    ? url.slice(0, url.indexOf('/', 3 + fqdnIndex))
     : undefined;
 }
