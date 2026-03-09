@@ -1,8 +1,8 @@
 name: ci
 
 on:
-- pull_request
-- push
+  pull_request:
+  push:
 
 jobs:
   test:
@@ -10,68 +10,30 @@ jobs:
     strategy:
       matrix:
         include:
-        - name: Node.js 20.x
-          node-version: "20.19.0"
-
-        - name: Node.js 24.x
-          node-version: "24"
+          - name: Node.js 20.x
+            node-version: '20.19.0'
+          - name: Node.js 24.x
+            node-version: '24'
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Install Node.js ${{ matrix.node-version }}
-      shell: bash -eo pipefail -l {0}
-      run: |
-        nvm install --default ${{ matrix.node-version }}
-        dirname "$(nvm which ${{ matrix.node-version }})" >> "$GITHUB_PATH"
+      - name: Install Node.js ${{ matrix.node-version }}
+        shell: bash -eo pipefail -l {0}
+        run: |
+          nvm install --default ${{ matrix.node-version }}
+          dirname "$(nvm which ${{ matrix.node-version }})" >> "$GITHUB_PATH"
 
-    - name: Configure npm
-      run: |
-        if [[ "$(npm config get package-lock)" == "true" ]]; then
-          npm config set package-lock false
-        else
-          npm config set shrinkwrap false
-        fi
+      - name: Configure npm
+        run: |
+          if [[ "$(npm config get package-lock)" == "true" ]]; then
+            npm config set package-lock false
+          else
+            npm config set shrinkwrap false
+          fi
 
-    - name: Install Node.js dependencies
-      run: npm install
+      - name: Install Node.js dependencies
+        run: npm i pnpm -g && pnpm install
 
-    - name: List environment
-      id: list_env
-      shell: bash
-      run: |
-        echo "node@$(node -v)"
-        echo "npm@$(npm -v)"
-        npm -s ls ||:
-        (npm -s ls --depth=0 ||:) | awk -F'[ @]' 'NR>1 && $2 { print $2 "=" $3 }' >> "$GITHUB_OUTPUT"
-
-    - name: Run tests
-      shell: bash
-      run: |
-        if npm -ps ls nyc | grep -q nyc; then
-          npm run test-ci
-        else
-          npm test
-        fi
-
-    - name: Lint code
-      if: steps.list_env.outputs.eslint != ''
-      run: npm run lint
-
-    - name: Collect code coverage
-      uses: coverallsapp/github-action@master
-      if: steps.list_env.outputs.nyc != ''
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        flag-name: run-${{ matrix.test_number }}
-        parallel: true
-
-  coverage:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-    - name: Uploade code coverage
-      uses: coverallsapp/github-action@master
-      with:
-        github-token: ${{ secrets.github_token }}
-        parallel-finished: true
+      - name: Run tests
+        run: npm test

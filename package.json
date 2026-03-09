@@ -24,7 +24,6 @@
   },
   "devDependencies": {
     "mocha": "10.7.3",
-    "nyc": "17.1.0",
     "prettier": "^3.8.1",
     "supertest": "6.3.4"
   },
@@ -40,8 +39,6 @@
     "node": "^20.19.0 || >=22.12.0"
   },
   "scripts": {
-    "test": "mocha --file test/support/env.js --reporter spec --bail --check-leaks test/",
-    "test-ci": "nyc --reporter=lcov --reporter=text npm test",
-    "test-cov": "nyc --reporter=html --reporter=text npm test"
+    "test": "mocha --file test/support/env.js --reporter spec --bail --check-leaks test/"
   }
 }
