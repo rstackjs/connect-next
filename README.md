@@ -4,7 +4,6 @@
 
 [![NPM Version][npm-version-image]][npm-url]
 [![NPM Downloads][npm-downloads-image]][npm-url]
-[![Build Status][github-actions-ci-image]][github-actions-ci-url]
 
 </div>
 
@@ -298,8 +297,11 @@ The current lead maintainer is [Douglas Christopher Wilson](https://github.com/d
 
 [MIT](LICENSE)
 
-[github-actions-ci-image]: https://badgen.net/github/checks/senchalabs/connect/master?label=ci
-[github-actions-ci-url]: https://github.com/jshttp/senchalabs/connect?query=workflow%3Aci
+## Credits
+
+This project builds on the original [Connect](https://github.com/senchalabs/connect)
+and would not exist without the work of its maintainers and contributors.
+
 [npm-downloads-image]: https://badgen.net/npm/dm/connect-next
 [npm-url]: https://npmjs.org/package/connect-next
 [npm-version-image]: https://badgen.net/npm/v/connect-next
