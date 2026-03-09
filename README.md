@@ -17,6 +17,7 @@ Connect is an extensible HTTP server framework for [node](http://nodejs.org) usi
 ## Changes
 
 - Requires Node.js `^20.19.0 || >=22.12.0`
+- Rewrites with TypeScript
 - Publishes as native ESM via `"type": "module"`
 - Exposes a named `connect` export
 - Removes `utils-merge` dependency
