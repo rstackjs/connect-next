@@ -283,24 +283,15 @@ npm install
 npm test
 ```
 
-## People
+## Credits
 
-The Connect project would not be the same without all the people involved.
+This project builds on the original [Connect](https://github.com/senchalabs/connect) and would not exist without the work of its maintainers and contributors.
 
-The original author of Connect is [TJ Holowaychuk](https://github.com/tj)
-
-The current lead maintainer is [Douglas Christopher Wilson](https://github.com/dougwilson)
-
-[List of all contributors](https://github.com/senchalabs/connect/graphs/contributors)
+[List of all contributors](https://github.com/rstackjs/connect-next/graphs/contributors)
 
 ## License
 
 [MIT](LICENSE)
-
-## Credits
-
-This project builds on the original [Connect](https://github.com/senchalabs/connect)
-and would not exist without the work of its maintainers and contributors.
 
 [npm-downloads-image]: https://badgen.net/npm/dm/connect-next
 [npm-url]: https://npmjs.org/package/connect-next

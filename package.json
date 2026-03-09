@@ -22,6 +22,7 @@
   ],
   "scripts": {
     "build": "rslib --syntax es2023 --dts",
+    "bump": "npx bumpp",
     "prepare": "pnpm run build",
     "test": "mocha --file test/support/env.js --reporter spec --bail --check-leaks test/"
   },
