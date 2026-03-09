@@ -68,7 +68,7 @@ $ npm install connect-next
 
 ### Migrate from `connect`
 
-If you are migrating from `connect`, remove the legacy packages and install `connect-next`:
+If you are migrating from `connect`, remove the previous packages and install `connect-next`:
 
 ```sh
 $ npm remove connect @types/connect
