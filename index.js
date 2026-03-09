@@ -17,7 +17,6 @@ var debug = require('debug')('connect:dispatcher');
 var EventEmitter = require('events').EventEmitter;
 var finalhandler = require('finalhandler');
 var http = require('http');
-var merge = require('utils-merge');
 var parseUrl = require('parseurl');
 
 /**
@@ -49,8 +48,8 @@ var defer = typeof setImmediate === 'function'
 
 function createServer() {
   function app(req, res, next){ app.handle(req, res, next); }
-  merge(app, proto);
-  merge(app, EventEmitter.prototype);
+  Object.assign(app, proto);
+  Object.assign(app, EventEmitter.prototype);
   app.route = '/';
   app.stack = [];
   return app;
