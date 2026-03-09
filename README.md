@@ -9,9 +9,17 @@
 
 </div>
 
-> connect-next is an actively maintained fork of Connect.
+# connect-next
 
-  Connect is an extensible HTTP server framework for [node](http://nodejs.org) using "plugins" known as _middleware_.
+connect-next is an actively maintained fork of [Connect](https://github.com/senchalabs/connect).
+
+Connect is an extensible HTTP server framework for [node](http://nodejs.org) using "plugins" known as _middleware_.
+
+## Changes
+
+- Requires Node.js `^20.19.0 || >=22.12.0`
+
+## Example
 
 ```js
 var connect = require('connect-next');
@@ -25,16 +33,18 @@ app.use(compression());
 
 // store session state in browser cookie
 var cookieSession = require('cookie-session');
-app.use(cookieSession({
-    keys: ['secret1', 'secret2']
-}));
+app.use(
+  cookieSession({
+    keys: ['secret1', 'secret2'],
+  }),
+);
 
 // parse urlencoded request bodies into req.body
 var bodyParser = require('body-parser');
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 
 // respond to all requests
-app.use(function(req, res){
+app.use(function (req, res) {
   res.end('Hello from Connect!\n');
 });
 
@@ -137,41 +147,41 @@ var server = http.createServer(app);
 
 These middleware and libraries are officially supported by the Connect/Express team:
 
-  - [body-parser](https://www.npmjs.com/package/body-parser) - previous `bodyParser`, `json`, and `urlencoded`. You may also be interested in:
-    - [body](https://www.npmjs.com/package/body)
-    - [co-body](https://www.npmjs.com/package/co-body)
-    - [raw-body](https://www.npmjs.com/package/raw-body)
-  - [compression](https://www.npmjs.com/package/compression) - previously `compress`
-  - [connect-timeout](https://www.npmjs.com/package/connect-timeout) - previously `timeout`
-  - [cookie-parser](https://www.npmjs.com/package/cookie-parser) - previously `cookieParser`
-  - [cookie-session](https://www.npmjs.com/package/cookie-session) - previously `cookieSession`
-  - [csurf](https://www.npmjs.com/package/csurf) - previously `csrf`
-  - [errorhandler](https://www.npmjs.com/package/errorhandler) - previously `error-handler`
-  - [express-session](https://www.npmjs.com/package/express-session) - previously `session`
-  - [method-override](https://www.npmjs.com/package/method-override) - previously `method-override`
-  - [morgan](https://www.npmjs.com/package/morgan) - previously `logger`
-  - [response-time](https://www.npmjs.com/package/response-time) - previously `response-time`
-  - [serve-favicon](https://www.npmjs.com/package/serve-favicon) - previously `favicon`
-  - [serve-index](https://www.npmjs.com/package/serve-index) - previously `directory`
-  - [serve-static](https://www.npmjs.com/package/serve-static) - previously `static`
-  - [vhost](https://www.npmjs.com/package/vhost) - previously `vhost`
+- [body-parser](https://www.npmjs.com/package/body-parser) - previous `bodyParser`, `json`, and `urlencoded`. You may also be interested in:
+  - [body](https://www.npmjs.com/package/body)
+  - [co-body](https://www.npmjs.com/package/co-body)
+  - [raw-body](https://www.npmjs.com/package/raw-body)
+- [compression](https://www.npmjs.com/package/compression) - previously `compress`
+- [connect-timeout](https://www.npmjs.com/package/connect-timeout) - previously `timeout`
+- [cookie-parser](https://www.npmjs.com/package/cookie-parser) - previously `cookieParser`
+- [cookie-session](https://www.npmjs.com/package/cookie-session) - previously `cookieSession`
+- [csurf](https://www.npmjs.com/package/csurf) - previously `csrf`
+- [errorhandler](https://www.npmjs.com/package/errorhandler) - previously `error-handler`
+- [express-session](https://www.npmjs.com/package/express-session) - previously `session`
+- [method-override](https://www.npmjs.com/package/method-override) - previously `method-override`
+- [morgan](https://www.npmjs.com/package/morgan) - previously `logger`
+- [response-time](https://www.npmjs.com/package/response-time) - previously `response-time`
+- [serve-favicon](https://www.npmjs.com/package/serve-favicon) - previously `favicon`
+- [serve-index](https://www.npmjs.com/package/serve-index) - previously `directory`
+- [serve-static](https://www.npmjs.com/package/serve-static) - previously `static`
+- [vhost](https://www.npmjs.com/package/vhost) - previously `vhost`
 
 Most of these are exact ports of their Connect 2.x equivalents. The primary exception is `cookie-session`.
 
 Some middleware previously included with Connect are no longer supported by the Connect/Express team, are replaced by an alternative module, or should be superseded by a better module. Use one of these alternatives instead:
 
-  - `cookieParser`
-    - [cookies](https://www.npmjs.com/package/cookies) and [keygrip](https://www.npmjs.com/package/keygrip)
-  - `limit`
-    - [raw-body](https://www.npmjs.com/package/raw-body)
-  - `multipart`
-    - [connect-multiparty](https://www.npmjs.com/package/connect-multiparty)
-    - [connect-busboy](https://www.npmjs.com/package/connect-busboy)
-  - `query`
-    - [qs](https://www.npmjs.com/package/qs)
-  - `staticCache`
-    - [st](https://www.npmjs.com/package/st)
-    - [connect-static](https://www.npmjs.com/package/connect-static)
+- `cookieParser`
+  - [cookies](https://www.npmjs.com/package/cookies) and [keygrip](https://www.npmjs.com/package/keygrip)
+- `limit`
+  - [raw-body](https://www.npmjs.com/package/raw-body)
+- `multipart`
+  - [connect-multiparty](https://www.npmjs.com/package/connect-multiparty)
+  - [connect-busboy](https://www.npmjs.com/package/connect-busboy)
+- `query`
+  - [qs](https://www.npmjs.com/package/qs)
+- `staticCache`
+  - [st](https://www.npmjs.com/package/st)
+  - [connect-static](https://www.npmjs.com/package/connect-static)
 
 Checkout [http-framework](https://github.com/Raynos/http-framework/wiki/Modules) for many other compatible middleware!
 
@@ -185,10 +195,10 @@ a new app when called.
 
 ```js
 // require module
-var connect = require('connect-next')
+var connect = require('connect-next');
 
 // create app
-var app = connect()
+var app = connect();
 ```
 
 ### app(req, res[, next])
@@ -222,7 +232,7 @@ app.use(function (req, res, next) {
   // req is the Node.js http request object
   // res is the Node.js http response object
   // next is a function to call to invoke the next middleware
-})
+});
 ```
 
 In addition to a plan function, the `fn` argument can also be a Node.js HTTP server
@@ -240,7 +250,7 @@ app.use('/foo', function (req, res, next) {
   // req is the Node.js http request object
   // res is the Node.js http response object
   // next is a function to call to invoke the next middleware
-})
+});
 ```
 
 In addition to a plan function, the `fn` argument can also be a Node.js HTTP server
