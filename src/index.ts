@@ -14,11 +14,7 @@
 import createDebug from 'debug';
 import { EventEmitter } from 'node:events';
 import finalhandler from 'finalhandler';
-import http, {
-  type IncomingMessage,
-  type Server,
-  type ServerResponse,
-} from 'node:http';
+import * as http from 'node:http';
 import type { ListenOptions } from 'node:net';
 import parseUrl from 'parseurl';
 
@@ -26,53 +22,60 @@ import parseUrl from 'parseurl';
  * Public and internal Connect types.
  */
 
-interface ConnectRequest extends IncomingMessage {
-  originalUrl?: IncomingMessage['url'];
+export interface IncomingMessage extends http.IncomingMessage {
+  originalUrl?: http.IncomingMessage['url'] | undefined;
 }
 
-type ConnectResponse = ServerResponse<IncomingMessage>;
-type NextFunction = (err?: unknown) => void;
-type SimpleHandleFunction = (req: ConnectRequest, res: ConnectResponse) => void;
-type NextHandleFunction = (
-  req: ConnectRequest,
-  res: ConnectResponse,
+export type NextFunction = (err?: any) => void;
+export type SimpleHandleFunction = (req: IncomingMessage, res: http.ServerResponse) => void;
+export type NextHandleFunction = (
+  req: IncomingMessage,
+  res: http.ServerResponse,
   next: NextFunction,
 ) => void;
-type ErrorHandleFunction = (
-  err: unknown,
-  req: ConnectRequest,
-  res: ConnectResponse,
+export type ErrorHandleFunction = (
+  err: any,
+  req: IncomingMessage,
+  res: http.ServerResponse,
   next: NextFunction,
 ) => void;
-type RequestHandleFunction = SimpleHandleFunction | NextHandleFunction;
-type ConnectHandle = RequestHandleFunction | ErrorHandleFunction;
-type Middleware = ConnectHandle | ConnectServer | HttpServer;
-type HttpServer = Server;
+export type HandleFunction = SimpleHandleFunction | NextHandleFunction | ErrorHandleFunction;
+export type ServerHandle = HandleFunction | http.Server;
 
-interface Layer {
+type Middleware = HandleFunction | Server | http.Server;
+
+export interface ServerStackItem {
   route: string;
-  handle: ConnectHandle;
+  handle: ServerHandle;
 }
 
-interface ConnectServer extends EventEmitter {
-  (req: ConnectRequest, res: ConnectResponse, next?: NextFunction): void;
+interface Layer extends ServerStackItem {
+  handle: HandleFunction;
+}
+
+export interface Server extends EventEmitter {
+  (req: http.IncomingMessage, res: http.ServerResponse, next?: Function): void;
   route: string;
-  stack: Layer[];
-  handle(req: ConnectRequest, res: ConnectResponse, out?: NextFunction): void;
-  use(handle: Middleware): this;
-  use(route: string, handle: Middleware): this;
-  listen(port: number, hostname?: string, backlog?: number, callback?: () => void): HttpServer;
-  listen(port: number, hostname?: string, callback?: () => void): HttpServer;
-  listen(path: string, callback?: () => void): HttpServer;
-  listen(options: ListenOptions, callback?: () => void): HttpServer;
-  listen(handle: unknown, listeningListener?: () => void): HttpServer;
+  stack: ServerStackItem[];
+  handle(req: http.IncomingMessage, res: http.ServerResponse, next?: Function): void;
+  use(fn: NextHandleFunction): Server;
+  use(fn: HandleFunction): Server;
+  use(fn: http.Server): Server;
+  use(route: string, fn: NextHandleFunction): Server;
+  use(route: string, fn: HandleFunction): Server;
+  use(route: string, fn: http.Server): Server;
+  listen(port: number, hostname?: string, backlog?: number, callback?: Function): http.Server;
+  listen(port: number, hostname?: string, callback?: Function): http.Server;
+  listen(path: string, callback?: Function): http.Server;
+  listen(options: ListenOptions, callback?: Function): http.Server;
+  listen(handle: unknown, listeningListener?: Function): http.Server;
 }
 
 interface ConnectProto extends EventEmitter {
-  handle(this: ConnectServer, req: ConnectRequest, res: ConnectResponse, out?: NextFunction): void;
-  use(this: ConnectServer, handle: Middleware): ConnectServer;
-  use(this: ConnectServer, route: string, handle: Middleware): ConnectServer;
-  listen(this: ConnectServer, ...args: unknown[]): HttpServer;
+  handle(this: Server, req: IncomingMessage, res: http.ServerResponse, out?: NextFunction): void;
+  use(this: Server, handle: Middleware): Server;
+  use(this: Server, route: string, handle: Middleware): Server;
+  listen(this: Server, ...args: unknown[]): http.Server;
 }
 
 /**
@@ -92,14 +95,14 @@ const defer: typeof setImmediate = setImmediate;
  * @public
  */
 
-function connect(): ConnectServer {
+function connect(): Server {
   const app = (function (
-    req: ConnectRequest,
-    res: ConnectResponse,
+    req: IncomingMessage,
+    res: http.ServerResponse,
     next?: NextFunction,
   ): void {
     app.handle(req, res, next);
-  }) as ConnectServer;
+  }) as Server;
 
   Object.assign(app, proto);
   Object.assign(app, EventEmitter.prototype);
@@ -129,10 +132,10 @@ export { connect };
  */
 
 proto.use = function use(
-  this: ConnectServer,
+  this: Server,
   route: string | Middleware,
   fn?: Middleware,
-): ConnectServer {
+): Server {
   let handle: Middleware | undefined = fn;
   let path = '/';
 
@@ -152,8 +155,8 @@ proto.use = function use(
     const server = handle;
     server.route = path;
     handle = function mountedApp(
-      req: ConnectRequest,
-      res: ConnectResponse,
+      req: IncomingMessage,
+      res: http.ServerResponse,
       next: NextFunction,
     ): void {
       server.handle(req, res, next);
@@ -195,16 +198,16 @@ proto.use = function use(
  */
 
 proto.handle = function handle(
-  this: ConnectServer,
-  req: ConnectRequest,
-  res: ConnectResponse,
+  this: Server,
+  req: IncomingMessage,
+  res: http.ServerResponse,
   out?: NextFunction,
 ): void {
   let index = 0;
   const protohost = getProtohost(req.url || '') || '';
   let removed = '';
   let slashAdded = false;
-  const stack = this.stack;
+  const stack = this.stack as Layer[];
 
   // final function handler
   const done = (out ?? finalhandler(req, res, {
@@ -299,9 +302,9 @@ proto.handle = function handle(
  * @api public
  */
 
-proto.listen = function listen(this: ConnectServer, ...args: unknown[]): HttpServer {
+proto.listen = function listen(this: Server, ...args: unknown[]): http.Server {
   const server = http.createServer(this);
-  return server.listen(...(args as Parameters<HttpServer['listen']>));
+  return server.listen(...(args as Parameters<http.Server['listen']>));
 };
 
 /**
@@ -310,11 +313,11 @@ proto.listen = function listen(this: ConnectServer, ...args: unknown[]): HttpSer
  */
 
 function call(
-  handle: ConnectHandle,
+  handle: HandleFunction,
   route: string,
   err: unknown,
-  req: ConnectRequest,
-  res: ConnectResponse,
+  req: IncomingMessage,
+  res: http.ServerResponse,
   next: NextFunction,
 ): void {
   const arity = handle.length;
@@ -332,7 +335,7 @@ function call(
 
     if (!hasError && arity < 4) {
       // request-handling middleware
-      (handle as (req: ConnectRequest, res: ConnectResponse, next: NextFunction) => void)(
+      (handle as (req: IncomingMessage, res: http.ServerResponse, next: NextFunction) => void)(
         req,
         res,
         next,
@@ -385,14 +388,14 @@ function getProtohost(url: string): string | undefined {
     : undefined;
 }
 
-function isConnectHandle(value: Middleware): value is ConnectHandle {
+function isConnectHandle(value: Middleware): value is HandleFunction {
   return typeof value === 'function';
 }
 
-function isConnectServer(value: Middleware): value is ConnectServer {
+function isConnectServer(value: Middleware): value is Server {
   return typeof value === 'function' && 'handle' in value && typeof value.handle === 'function';
 }
 
-function isHttpServer(value: Middleware): value is HttpServer {
+function isHttpServer(value: Middleware): value is http.Server {
   return value instanceof http.Server;
 }
