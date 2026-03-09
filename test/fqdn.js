@@ -1,5 +1,5 @@
 
-import { connect } from '../index.js';
+import { connect } from '../dist/index.js';
 import rawrequest from './support/rawagent.js';
 
 describe('app.use()', function(){
