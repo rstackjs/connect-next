@@ -9,10 +9,12 @@
 
 </div>
 
+> connect-next is an actively maintained fork of Connect.
+
   Connect is an extensible HTTP server framework for [node](http://nodejs.org) using "plugins" known as _middleware_.
 
 ```js
-var connect = require('connect');
+var connect = require('connect-next');
 var http = require('http');
 
 var app = connect();
@@ -47,7 +49,7 @@ Connect is a simple framework to glue together various "middleware" to handle re
 ### Install Connect
 
 ```sh
-$ npm install connect
+$ npm install connect-next
 ```
 
 ### Create an app
@@ -183,7 +185,7 @@ a new app when called.
 
 ```js
 // require module
-var connect = require('connect')
+var connect = require('connect-next')
 
 // create app
 var app = connect()
@@ -282,6 +284,6 @@ The current lead maintainer is [Douglas Christopher Wilson](https://github.com/d
 [coveralls-url]: https://coveralls.io/r/senchalabs/connect?branch=master
 [github-actions-ci-image]: https://badgen.net/github/checks/senchalabs/connect/master?label=ci
 [github-actions-ci-url]: https://github.com/jshttp/senchalabs/connect?query=workflow%3Aci
-[npm-downloads-image]: https://badgen.net/npm/dm/connect
-[npm-url]: https://npmjs.org/package/connect
-[npm-version-image]: https://badgen.net/npm/v/connect
+[npm-downloads-image]: https://badgen.net/npm/dm/connect-next
+[npm-url]: https://npmjs.org/package/connect-next
+[npm-version-image]: https://badgen.net/npm/v/connect-next
