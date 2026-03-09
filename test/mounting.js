@@ -1,8 +1,9 @@
 
-var assert = require('assert');
-var connect = require('..');
-var http = require('http');
-var request = require('supertest');
+import assert from 'node:assert';
+import http from 'node:http';
+import request from 'supertest';
+
+import connect from '../index.js';
 
 describe('app.use()', function(){
   var app;

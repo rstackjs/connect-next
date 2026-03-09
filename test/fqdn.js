@@ -1,6 +1,6 @@
 
-var connect = require('..');
-var rawrequest = require('./support/rawagent')
+import connect from '../index.js';
+import rawrequest from './support/rawagent.js';
 
 describe('app.use()', function(){
   var app;

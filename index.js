@@ -6,31 +6,23 @@
  * MIT Licensed
  */
 
-'use strict';
-
 /**
  * Module dependencies.
  * @private
  */
 
-const debug = require('debug')('connect:dispatcher');
-const { EventEmitter } = require('node:events');
-const finalhandler = require('finalhandler');
-const http = require('node:http');
-const parseUrl = require('parseurl');
-
-/**
- * Module exports.
- * @public
- */
-
-module.exports = createServer;
+import createDebug from 'debug';
+import { EventEmitter } from 'node:events';
+import finalhandler from 'finalhandler';
+import http from 'node:http';
+import parseUrl from 'parseurl';
 
 /**
  * Module variables.
  * @private
  */
 
+const debug = createDebug('connect:dispatcher');
 const env = process.env.NODE_ENV || 'development';
 const proto = {};
 const defer = setImmediate;
@@ -50,6 +42,8 @@ function createServer() {
   app.stack = [];
   return app;
 }
+
+export default createServer;
 
 /**
  * Utilize the given middleware `handle` to the given `route`,

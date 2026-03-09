@@ -1,7 +1,8 @@
 
-var assert = require('assert')
-var connect = require('..');
-var request = require('supertest');
+import assert from 'node:assert';
+import request from 'supertest';
+
+import connect from '../index.js';
 
 describe('app.listen()', function(){
   it('should wrap in an http.Server', function(done){

@@ -1,9 +1,10 @@
 
-var assert = require('assert');
-var connect = require('..');
-var http = require('http');
-var rawrequest = require('./support/rawagent')
-var request = require('supertest');
+import assert from 'node:assert';
+import http from 'node:http';
+import request from 'supertest';
+
+import connect from '../index.js';
+import rawrequest from './support/rawagent.js';
 
 describe('app', function(){
   var app;

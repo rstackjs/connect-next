@@ -1,13 +1,11 @@
-'use strict'
-
-var assert = require('assert')
-var http = require('http')
-
-module.exports = createRawAgent
+import assert from 'node:assert';
+import http from 'node:http';
 
 function createRawAgent (app) {
   return new RawAgent(app)
 }
+
+export default createRawAgent
 
 function RawAgent (app) {
   this.app = app
