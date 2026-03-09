@@ -19,6 +19,7 @@ Connect is an extensible HTTP server framework for [node](http://nodejs.org) usi
 
 - Requires Node.js `^20.19.0 || >=22.12.0`
 - Publishes as native ESM via `"type": "module"`
+- Exposes a named `connect` export
 - Removes `utils-merge` dependency
 - Upgrades `debug` to `v4`
 - Upgrades `finalhandler` to `v2`
@@ -26,7 +27,7 @@ Connect is an extensible HTTP server framework for [node](http://nodejs.org) usi
 ## Example
 
 ```js
-import connect from 'connect-next';
+import { connect } from 'connect-next';
 import { createServer } from 'node:http';
 import compression from 'compression';
 import cookieSession from 'cookie-session';
@@ -72,6 +73,8 @@ The main component is a Connect "app". This will store all the middleware
 added and is, itself, a function.
 
 ```js
+import { connect } from 'connect-next';
+
 const app = connect();
 ```
 
@@ -144,6 +147,8 @@ The app itself is really just a function with three arguments, so it can also be
 to `.createServer()` in Node.js.
 
 ```js
+import { createServer } from 'node:http';
+
 const server = createServer(app);
 ```
 
@@ -194,11 +199,11 @@ Checkout [http-framework](https://github.com/Raynos/http-framework/wiki/Modules)
 The Connect API is very minimalist, enough to create an app and add a chain
 of middleware.
 
-When the `connect` module is imported, the default export is a function that will construct a new app when called.
+When the `connect-next` module is imported, the named `connect` export is a function that will construct a new app when called.
 
 ```js
 // import module
-import connect from 'connect-next';
+import { connect } from 'connect-next';
 
 // create app
 const app = connect();

@@ -3,7 +3,7 @@ import assert from 'node:assert';
 import http from 'node:http';
 import request from 'supertest';
 
-import connect from '../index.js';
+import { connect } from '../index.js';
 import rawrequest from './support/rawagent.js';
 
 describe('app', function(){

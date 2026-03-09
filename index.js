@@ -34,7 +34,7 @@ const defer = setImmediate;
  * @public
  */
 
-function createServer() {
+function connect() {
   function app(req, res, next) { app.handle(req, res, next); }
   Object.assign(app, proto);
   Object.assign(app, EventEmitter.prototype);
@@ -43,7 +43,7 @@ function createServer() {
   return app;
 }
 
-export default createServer;
+export { connect };
 
 /**
  * Utilize the given middleware `handle` to the given `route`,
@@ -190,14 +190,14 @@ proto.handle = function handle(req, res, out) {
  * since your Connect "server" is really just
  * a JavaScript `Function`.
  *
- *      var connect = require('connect')
- *        , http = require('http')
- *        , https = require('https');
+ *      import { createServer as createHttpServer } from 'node:http';
+ *      import { createServer as createHttpsServer } from 'node:https';
+ *      import { connect } from 'connect-next';
  *
- *      var app = connect();
+ *      const app = connect();
  *
- *      http.createServer(app).listen(80);
- *      https.createServer(options, app).listen(443);
+ *      createHttpServer(app).listen(80);
+ *      createHttpsServer(options, app).listen(443);
  *
  * @return {http.Server}
  * @api public
