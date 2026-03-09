@@ -26,17 +26,18 @@ Connect is an extensible HTTP server framework for [node](http://nodejs.org) usi
 ## Example
 
 ```js
-var connect = require('connect-next');
-var http = require('http');
+import connect from 'connect-next';
+import { createServer } from 'node:http';
+import compression from 'compression';
+import cookieSession from 'cookie-session';
+import bodyParser from 'body-parser';
 
-var app = connect();
+const app = connect();
 
 // gzip/deflate outgoing responses
-var compression = require('compression');
 app.use(compression());
 
 // store session state in browser cookie
-var cookieSession = require('cookie-session');
 app.use(
   cookieSession({
     keys: ['secret1', 'secret2'],
@@ -44,16 +45,15 @@ app.use(
 );
 
 // parse urlencoded request bodies into req.body
-var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // respond to all requests
-app.use(function (req, res) {
+app.use((req, res) => {
   res.end('Hello from Connect!\n');
 });
 
-//create node.js http server and listen on port
-http.createServer(app).listen(3000);
+// create an HTTP server and listen on port 3000
+createServer(app).listen(3000);
 ```
 
 ## Getting Started
@@ -72,7 +72,7 @@ The main component is a Connect "app". This will store all the middleware
 added and is, itself, a function.
 
 ```js
-var app = connect();
+const app = connect();
 ```
 
 ### Use middleware
@@ -118,14 +118,14 @@ middleware and any non-error middleware below.
 
 ```js
 // regular middleware
-app.use(function (req, res, next) {
-  // i had an error
+app.use((req, res, next) => {
+  // something failed
   next(new Error('boom!'));
 });
 
 // error middleware for errors that occurred in middleware
 // declared before this
-app.use(function onerror(err, req, res, next) {
+app.use(function onError(err, req, res, next) {
   // an error occurred!
 });
 ```
@@ -137,14 +137,14 @@ is a convenience to start a HTTP server (and is identical to the `http.Server`'s
 method in the version of Node.js you are running).
 
 ```js
-var server = app.listen(port);
+const server = app.listen(port);
 ```
 
 The app itself is really just a function with three arguments, so it can also be handed
 to `.createServer()` in Node.js.
 
 ```js
-var server = http.createServer(app);
+const server = createServer(app);
 ```
 
 ## Middleware
@@ -194,15 +194,14 @@ Checkout [http-framework](https://github.com/Raynos/http-framework/wiki/Modules)
 The Connect API is very minimalist, enough to create an app and add a chain
 of middleware.
 
-When the `connect` module is required, a function is returned that will construct
-a new app when called.
+When the `connect` module is imported, the default export is a function that will construct a new app when called.
 
 ```js
-// require module
-var connect = require('connect-next');
+// import module
+import connect from 'connect-next';
 
 // create app
-var app = connect();
+const app = connect();
 ```
 
 ### app(req, res[, next])
@@ -232,7 +231,7 @@ will be invoked for every request in the order that `app.use` is called. The fun
 is called with three arguments:
 
 ```js
-app.use(function (req, res, next) {
+app.use((req, res, next) => {
   // req is the Node.js http request object
   // res is the Node.js http response object
   // next is a function to call to invoke the next middleware
@@ -250,7 +249,7 @@ the given `route` string in the order that `app.use` is called. The function is
 called with three arguments:
 
 ```js
-app.use('/foo', function (req, res, next) {
+app.use('/foo', (req, res, next) => {
   // req is the Node.js http request object
   // res is the Node.js http response object
   // next is a function to call to invoke the next middleware
