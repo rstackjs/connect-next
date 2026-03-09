@@ -66,6 +66,24 @@ Connect is a simple framework to glue together various "middleware" to handle re
 $ npm install connect-next
 ```
 
+### Migrate from `connect`
+
+If you are migrating from `connect`, remove the legacy packages and install `connect-next`:
+
+```sh
+$ npm remove connect @types/connect
+$ npm install connect-next
+```
+
+`connect-next` ships its own TypeScript types, so `@types/connect` is no longer needed.
+
+The package also exposes a named `connect` export instead of a default import:
+
+```diff
+-import connect from 'connect';
++import { connect } from 'connect-next';
+```
+
 ### Create an app
 
 The main component is a Connect "app". This will store all the middleware
