@@ -19,6 +19,8 @@ Connect is an extensible HTTP server framework for [node](http://nodejs.org) usi
 
 - Requires Node.js `^20.19.0 || >=22.12.0`
 - Removes `utils-merge` dependency
+- Upgrades `debug` to `v4`
+- Upgrades `finalhandler` to `v2`
 
 ## Example
 
