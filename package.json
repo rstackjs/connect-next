@@ -24,10 +24,12 @@
     "build": "rslib",
     "bump": "npx bumpp",
     "prepare": "rslib",
+    "lint": "rslint",
     "test": "mocha --file test/support/env.js --reporter spec --bail --check-leaks test/"
   },
   "devDependencies": {
     "@rslib/core": "^0.20.2",
+    "@rslint/core": "^0.3.4",
     "@types/debug": "^4.1.12",
     "@types/finalhandler": "^1.2.4",
     "@types/node": "^24.0.0",
