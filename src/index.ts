@@ -27,6 +27,7 @@ export interface IncomingMessage extends http.IncomingMessage {
   originalUrl?: http.IncomingMessage['url'] | undefined;
 }
 
+// rslint-disable-next-line @typescript-eslint/no-explicit-any
 export type NextFunction = (err?: any) => void;
 export type SimpleHandleFunction = (
   req: IncomingMessage,
@@ -38,6 +39,7 @@ export type NextHandleFunction = (
   next: NextFunction,
 ) => void;
 export type ErrorHandleFunction = (
+  // rslint-disable-next-line @typescript-eslint/no-explicit-any
   err: any,
   req: IncomingMessage,
   res: http.ServerResponse,

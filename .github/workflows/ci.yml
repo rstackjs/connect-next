@@ -37,3 +37,6 @@ jobs:
 
       - name: Run tests
         run: pnpm run build && pnpm run test
+
+      - name: Run lint
+        run: pnpm run lint
