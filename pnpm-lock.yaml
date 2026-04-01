@@ -13,7 +13,7 @@ importers:
         version: 0.20.2(core-js@3.47.0)(typescript@6.0.2)
       '@rslint/core':
         specifier: ^0.3.4
-        version: 0.3.4
+        version: 0.3.4(jiti@2.6.1)
       '@types/debug':
         specifier: ^4.1.12
         version: 4.1.12
@@ -32,6 +32,9 @@ importers:
       finalhandler:
         specifier: ^2.1.1
         version: 2.1.1
+      jiti:
+        specifier: ^2.6.1
+        version: 2.6.1
       mocha:
         specifier: 10.7.3
         version: 10.7.3
@@ -541,6 +544,10 @@ packages:
     resolution: {integrity: sha512-knxG2q4UC3u8stRGyAVJCOdxFmv5DZiRcdlIaAQXAbSfJya+OhopNotLQrstBhququ4ZpuKbDc/8S6mgXgPFPw==}
     engines: {node: '>=10'}
 
+  jiti@2.6.1:
+    resolution: {integrity: sha512-ekilCSN1jwRvIbgeg/57YFh8qQDNbwDb9xT/qu2DAHbFFZUicIl4ygVaAvzveMhMVr3LnpSKTNnwt8PoOfmKhQ==}
+    hasBin: true
+
   js-yaml@4.1.1:
     resolution: {integrity: sha512-qQKT4zQxXl8lLwBtHMWwaTcGfFOZviOJet3Oy/xmGk2gZH677CJM9EvtfdSkgWcATZhj/55JZ0rmy3myCT5lsA==}
     hasBin: true
@@ -853,7 +860,7 @@ snapshots:
       - '@typescript/native-preview'
       - core-js
 
-  '@rslint/core@0.3.4':
+  '@rslint/core@0.3.4(jiti@2.6.1)':
     optionalDependencies:
       '@rslint/darwin-arm64': 0.3.4
       '@rslint/darwin-x64': 0.3.4
@@ -861,6 +868,7 @@ snapshots:
       '@rslint/linux-x64': 0.3.4
       '@rslint/win32-arm64': 0.3.4
       '@rslint/win32-x64': 0.3.4
+      jiti: 2.6.1
 
   '@rslint/darwin-arm64@0.3.4':
     optional: true
@@ -1211,6 +1219,8 @@ snapshots:
   is-plain-obj@2.1.0: {}
 
   is-unicode-supported@0.1.0: {}
+
+  jiti@2.6.1: {}
 
   js-yaml@4.1.1:
     dependencies:
