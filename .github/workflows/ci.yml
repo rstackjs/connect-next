@@ -24,16 +24,11 @@ jobs:
           nvm install --default ${{ matrix.node-version }}
           dirname "$(nvm which ${{ matrix.node-version }})" >> "$GITHUB_PATH"
 
-      - name: Configure npm
-        run: |
-          if [[ "$(npm config get package-lock)" == "true" ]]; then
-            npm config set package-lock false
-          else
-            npm config set shrinkwrap false
-          fi
+      - name: Install Pnpm
+        run: npm i -g corepack@latest --force && corepack enable
 
       - name: Install Node.js dependencies
-        run: npm i pnpm -g && pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Run tests
         run: pnpm run build && pnpm run test
