@@ -1,6 +1,7 @@
 {
   "name": "connect-next",
   "version": "4.0.1",
+  "packageManager": "pnpm@11.1.2",
   "description": "High performance middleware framework",
   "repository": "rstackjs/connect-next",
   "license": "MIT",
