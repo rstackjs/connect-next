@@ -23,7 +23,6 @@
   "scripts": {
     "build": "rslib",
     "bump": "npx bumpp",
-    "prepare": "rslib",
     "lint": "rslint",
     "test": "mocha --file test/support/env.js --reporter spec --bail --check-leaks test/"
   },
