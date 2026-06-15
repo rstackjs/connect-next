@@ -50,6 +50,7 @@ export type HandleFunction =
   | NextHandleFunction
   | ErrorHandleFunction;
 export type ServerHandle = HandleFunction | http.Server;
+type ListenCallback = () => void;
 
 type Middleware = HandleFunction | Server | http.Server;
 
@@ -63,13 +64,17 @@ interface Layer extends ServerStackItem {
 }
 
 export interface Server extends EventEmitter {
-  (req: http.IncomingMessage, res: http.ServerResponse, next?: Function): void;
+  (
+    req: http.IncomingMessage,
+    res: http.ServerResponse,
+    next?: NextFunction,
+  ): void;
   route: string;
   stack: ServerStackItem[];
   handle(
     req: http.IncomingMessage,
     res: http.ServerResponse,
-    next?: Function,
+    next?: NextFunction,
   ): void;
   use(fn: NextHandleFunction): Server;
   use(fn: HandleFunction): Server;
@@ -81,12 +86,16 @@ export interface Server extends EventEmitter {
     port: number,
     hostname?: string,
     backlog?: number,
-    callback?: Function,
+    callback?: ListenCallback,
   ): http.Server;
-  listen(port: number, hostname?: string, callback?: Function): http.Server;
-  listen(path: string, callback?: Function): http.Server;
-  listen(options: ListenOptions, callback?: Function): http.Server;
-  listen(handle: unknown, listeningListener?: Function): http.Server;
+  listen(
+    port: number,
+    hostname?: string,
+    callback?: ListenCallback,
+  ): http.Server;
+  listen(path: string, callback?: ListenCallback): http.Server;
+  listen(options: ListenOptions, callback?: ListenCallback): http.Server;
+  listen(handle: unknown, listeningListener?: ListenCallback): http.Server;
 }
 
 /**
