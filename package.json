@@ -27,22 +27,22 @@
     "test": "mocha --file test/support/env.js --reporter spec --bail --check-leaks test/"
   },
   "devDependencies": {
-    "@rslib/core": "^0.22.0",
+    "@rslib/core": "^0.22.1",
     "@rslint/core": "^0.6.1",
     "@types/debug": "^4.1.13",
     "@types/finalhandler": "^1.2.4",
-    "@types/node": "^24.12.4",
+    "@types/node": "^24.13.2",
     "@types/parseurl": "^1.3.3",
     "debug": "^4.4.3",
     "finalhandler": "^2.1.1",
     "jiti": "^2.7.0",
     "mocha": "11.7.6",
     "parseurl": "^1.3.3",
-    "prettier": "^3.8.3",
+    "prettier": "^3.8.4",
     "supertest": "7.2.2",
     "typescript": "6.0.3"
   },
-  "packageManager": "pnpm@11.5.0",
+  "packageManager": "pnpm@11.6.0",
   "engines": {
     "node": "^20.19.0 || >=22.12.0"
   }
