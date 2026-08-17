@@ -32,19 +32,19 @@ export type NextFunction = (err?: any) => void;
 export type SimpleHandleFunction = (
   req: IncomingMessage,
   res: http.ServerResponse,
-) => void;
+) => unknown;
 export type NextHandleFunction = (
   req: IncomingMessage,
   res: http.ServerResponse,
   next: NextFunction,
-) => void;
+) => unknown;
 export type ErrorHandleFunction = (
   // rslint-disable-next-line @typescript-eslint/no-explicit-any
   err: any,
   req: IncomingMessage,
   res: http.ServerResponse,
   next: NextFunction,
-) => void;
+) => unknown;
 export type HandleFunction =
   | SimpleHandleFunction
   | NextHandleFunction
@@ -345,19 +345,15 @@ function call(
   try {
     if (hasError && arity === 4) {
       // error-handling middleware
-      (handle as ErrorHandleFunction)(err, req, res, next);
+      const result = (handle as ErrorHandleFunction)(err, req, res, next);
+      handlePromise(result, next);
       return;
     }
 
     if (!hasError && arity < 4) {
       // request-handling middleware
-      (
-        handle as (
-          req: IncomingMessage,
-          res: http.ServerResponse,
-          next: NextFunction,
-        ) => void
-      )(req, res, next);
+      const result = (handle as NextHandleFunction)(req, res, next);
+      handlePromise(result, next);
       return;
     }
   } catch (caughtError: unknown) {
@@ -367,6 +363,29 @@ function call(
 
   // continue
   next(error);
+}
+
+type PromiseLikeResult = {
+  then: (
+    onFulfilled: null,
+    onRejected: (error: unknown) => void,
+  ) => unknown;
+};
+
+function isPromise(value: unknown): value is PromiseLikeResult {
+  return (
+    value !== null &&
+    (typeof value === 'object' || typeof value === 'function') &&
+    typeof (value as { then?: unknown }).then === 'function'
+  );
+}
+
+function handlePromise(result: unknown, next: NextFunction): void {
+  if (isPromise(result)) {
+    result.then(null, (error: unknown) => {
+      next(error || new Error('Rejected promise'));
+    });
+  }
 }
 
 /**
