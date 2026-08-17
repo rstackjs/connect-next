@@ -22,6 +22,7 @@ Connect is an extensible HTTP server framework for [node](http://nodejs.org) usi
 - Removes `utils-merge` dependency
 - Upgrades `debug` to `v4`
 - Upgrades `finalhandler` to `v2`
+- Supports Promise-returning middleware and forwards rejections to error middleware
 
 ## Example
 
@@ -111,6 +112,21 @@ app.use(function middleware2(req, res, next) {
   next();
 });
 ```
+
+Middleware may return a Promise. If the Promise rejects, the rejection reason is
+passed to `next` automatically. A rejection without a reason is converted to an
+`Error` with the message `Rejected promise`.
+
+```js
+app.use(async (req, res, next) => {
+  req.user = await loadUser(req);
+  next();
+});
+```
+
+A resolved Promise does not automatically call `next()`. The middleware must
+still call `next()` or end the response. Promise rejections returned by error
+middleware are forwarded in the same way.
 
 ### Mount middleware
 
