@@ -7,7 +7,6 @@ export default defineConfig([
     files: ['test/**/*'],
     rules: {
       '@typescript-eslint/no-this-alias': 'off',
-      'no-undef': 'off',
     },
   },
 ]);
