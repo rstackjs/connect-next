@@ -11,6 +11,8 @@ define.test({
   env: {
     NODE_ENV: 'test',
   },
+  // Preserves the `--bail` behaviour of the previous Mocha command.
+  bail: 1,
 });
 
 define.lint(({ js, ts }) => [
