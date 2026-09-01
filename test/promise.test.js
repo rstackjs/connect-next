@@ -1,27 +1,30 @@
 import assert from 'node:assert';
+import { describe, it } from 'rstack/test';
 import request from 'supertest';
 
 import { connect } from '../dist/index.js';
 
 describe('promise support', function () {
-  it('should pass a rejected promise value', function (done) {
+  it('should pass a rejected promise value', async function () {
     const app = connect();
+    let unexpected = false;
 
     app.use(async function createError() {
       throw new Error('boom!');
     });
     app.use(function unexpectedMiddleware(_req, _res, _next) {
-      done(new Error('Unexpected middleware invoke'));
+      unexpected = true;
     });
     app.use(function handleError(err, _req, res, _next) {
       res.statusCode = 500;
       res.end(`caught: ${err.message}`);
     });
 
-    request(app).get('/').expect(500, 'caught: boom!', done);
+    await request(app).get('/').expect(500, 'caught: boom!');
+    assert.ok(!unexpected, 'Unexpected middleware invoke');
   });
 
-  it('should pass a non-Error rejection value', function (done) {
+  it('should pass a non-Error rejection value', async function () {
     const app = connect();
 
     app.use(function createError() {
@@ -32,10 +35,10 @@ describe('promise support', function () {
       res.end(`caught: ${err}`);
     });
 
-    request(app).get('/').expect(500, 'caught: boom!', done);
+    await request(app).get('/').expect(500, 'caught: boom!');
   });
 
-  it('should create an Error for a rejected promise without a value', function (done) {
+  it('should create an Error for a rejected promise without a value', async function () {
     const app = connect();
 
     app.use(function createError() {
@@ -47,24 +50,26 @@ describe('promise support', function () {
       res.end(`caught: ${err.message}`);
     });
 
-    request(app).get('/').expect(500, 'caught: Rejected promise', done);
+    await request(app).get('/').expect(500, 'caught: Rejected promise');
   });
 
-  it('should ignore a resolved promise', function (done) {
+  it('should ignore a resolved promise', async function () {
     const app = connect();
+    let unexpected = false;
 
     app.use(function resolvePromise(_req, res) {
       res.end('resolved');
       return Promise.resolve('value');
     });
     app.use(function unexpectedMiddleware(_req, _res, _next) {
-      done(new Error('Unexpected middleware invoke'));
+      unexpected = true;
     });
 
-    request(app).get('/').expect(200, 'resolved', done);
+    await request(app).get('/').expect(200, 'resolved');
+    assert.ok(!unexpected, 'Unexpected middleware invoke');
   });
 
-  it('should continue when async middleware calls next', function (done) {
+  it('should continue when async middleware calls next', async function () {
     const app = connect();
 
     app.use(async function waitForPromise(_req, _res, next) {
@@ -75,10 +80,10 @@ describe('promise support', function () {
       res.end('continued');
     });
 
-    request(app).get('/').expect(200, 'continued', done);
+    await request(app).get('/').expect(200, 'continued');
   });
 
-  it('should support rejected Promise-like values', function (done) {
+  it('should support rejected Promise-like values', async function () {
     const app = connect();
 
     app.use(function createError() {
@@ -93,11 +98,11 @@ describe('promise support', function () {
       res.end(`caught: ${err.message}`);
     });
 
-    request(app).get('/').expect(500, 'caught: boom!', done);
+    await request(app).get('/').expect(500, 'caught: boom!');
   });
 
   describe('error middleware', function () {
-    it('should pass a rejected promise value', function (done) {
+    it('should pass a rejected promise value', async function () {
       const app = connect();
 
       app.use(function createError() {
@@ -111,12 +116,10 @@ describe('promise support', function () {
         res.end(`caught again: ${err.message}`);
       });
 
-      request(app)
-        .get('/')
-        .expect(500, 'caught again: caught: boom!', done);
+      await request(app).get('/').expect(500, 'caught again: caught: boom!');
     });
 
-    it('should create an Error for a rejected promise without a value', function (done) {
+    it('should create an Error for a rejected promise without a value', async function () {
       const app = connect();
 
       app.use(function createError() {
@@ -132,13 +135,12 @@ describe('promise support', function () {
         res.end(`caught again: ${err.message}`);
       });
 
-      request(app)
-        .get('/')
-        .expect(500, 'caught again: Rejected promise', done);
+      await request(app).get('/').expect(500, 'caught again: Rejected promise');
     });
 
-    it('should ignore a resolved promise', function (done) {
+    it('should ignore a resolved promise', async function () {
       const app = connect();
+      let unexpected = false;
 
       app.use(function createError() {
         return Promise.reject(new Error('boom!'));
@@ -148,16 +150,12 @@ describe('promise support', function () {
         res.end(`caught: ${err.message}`);
         return Promise.resolve('value');
       });
-      app.use(function unexpectedErrorMiddleware(
-        _err,
-        _req,
-        _res,
-        _next,
-      ) {
-        done(new Error('Unexpected error middleware invoke'));
+      app.use(function unexpectedErrorMiddleware(_err, _req, _res, _next) {
+        unexpected = true;
       });
 
-      request(app).get('/').expect(500, 'caught: boom!', done);
+      await request(app).get('/').expect(500, 'caught: boom!');
+      assert.ok(!unexpected, 'Unexpected error middleware invoke');
     });
   });
 });

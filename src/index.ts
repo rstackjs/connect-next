@@ -46,9 +46,7 @@ export type ErrorHandleFunction = (
   next: NextFunction,
 ) => unknown;
 export type HandleFunction =
-  | SimpleHandleFunction
-  | NextHandleFunction
-  | ErrorHandleFunction;
+  SimpleHandleFunction | NextHandleFunction | ErrorHandleFunction;
 export type ServerHandle = HandleFunction | http.Server;
 type ListenCallback = () => void;
 
@@ -366,10 +364,7 @@ function call(
 }
 
 type PromiseLikeResult = {
-  then: (
-    onFulfilled: null,
-    onRejected: (error: unknown) => void,
-  ) => unknown;
+  then: (onFulfilled: null, onRejected: (error: unknown) => void) => unknown;
 };
 
 function isPromise(value: unknown): value is PromiseLikeResult {
