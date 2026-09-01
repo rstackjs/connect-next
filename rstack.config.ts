@@ -2,17 +2,8 @@
 import { define } from 'rstack';
 
 define.lib({
-  lib: [{ syntax: 'es2023', dts: true }],
-});
-
-define.test({
-  // Tests exercise the built output in `dist`, and `src` reads `NODE_ENV`
-  // at module scope to silence error logging.
-  env: {
-    NODE_ENV: 'test',
-  },
-  // Preserves the `--bail` behaviour of the previous Mocha command.
-  bail: 1,
+  syntax: 'es2023',
+  dts: true,
 });
 
 define.lint(({ js, ts }) => [
